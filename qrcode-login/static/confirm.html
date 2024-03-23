@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>扫码登录确认</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/axios@1.5.0/dist/axios.min.js"></script>
+    <style>
+        #info {
+            height: 400px;
+            line-height: 400px;
+            font-size: 20px;
+            padding: 20px;
+        }
+
+        #confirm, #cancel {
+            display: block;
+            width: 80%;
+            line-height: 40px;
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+
+        #confirm {
+            background: skyblue;
+        }
+    </style>
+</head>
+<body>
+<button id="admin">登录admin账号</button>
+<button id="fan">登录fan账号</button>
+<div id="info">
+    是否确认登录该网站？
+</div>
+<button id="confirm">确认登录</button>
+<button id="cancel">取消</button>
+
+<script>
+    const param = new URLSearchParams(location.search.slice(1))
+    const id = param.get('id')
+    // 扫码后 检查二维码是否过期
+    axios.get('http://192.168.3.64:3000/qrcode/scan?id=' + id).catch(() => alert('二维码已过期，请重新生成'))
+    let token = ''
+    // 登录 admin 账号
+    document.getElementById('admin').addEventListener('click', () => {
+        axios.get('http://192.168.3.64:3000/login?username=admin&password=123456').then((res) => {
+            token = res.data.token
+            alert('登录成功')
+        })
+    })
+    // 登录 fan 账号
+    document.getElementById('fan').addEventListener('click', () => {
+        axios.get('http://192.168.3.64:3000/login?username=fan&password=123456').then((res) => {
+            token = res.data.token
+            alert('登录成功')
+        })
+    })
+    // 点击确认按钮
+    document.getElementById('confirm').addEventListener('click', () => {
+        axios.get('http://192.168.3.64:3000/qrcode/confirm?id=' + id, {
+            headers: {
+                Authorization: 'Bearer ' + token
+            }
+        }).then(() => {
+            alert('登录成功')
+        }).catch(() => alert('二维码已过期，请重新生成'))
+    })
+    // 点击取消按钮
+    document.getElementById('cancel').addEventListener('click', () => {
+        axios.get('http://192.168.3.64:3000/qrcode/cancel?id=' + id).then(() => {
+            alert('已取消登录')
+        }).catch(() => alert('二维码已过期，请重新生成'))
+    })
+</script>
+</body>
+</html>
