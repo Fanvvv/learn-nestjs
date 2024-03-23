@@ -1,0 +1,16 @@
+{
+  "name": "learn-nestjs",
+  "version": "1.0.0",
+  "description": "nestjs学习",
+  "keywords": [
+    "learn",
+    "nestjs"
+  ],
+  "author": "fan",
+  "license": "MIT",
+  "dependencies": {
+    "@nestjs/jwt": "^10.2.0",
+    "@types/qrcode": "^1.5.5",
+    "qrcode": "^1.5.3"
+  }
+}
